@@ -1,50 +1,64 @@
-# Welcome to your Expo app 👋
+# FindIt — Lost and Found App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+React Native (Expo Router) + Firebase project for a campus lost-and-found workflow.
 
-## Get started
+## Added features
 
-1. Install dependencies
+- Firebase Authentication
+- Firestore real-time lost and found posts
+- Admin review before posts become public
+- Lost and found post details screen
+- Share post button
+- Chat/message system between users and the poster
+- Claim transaction flow with admin approval
+- Claiming an item no longer removes the post from Home
+- My reports CRUD for users
+- Admin review and claim management
+- No Firebase Storage required: images are saved as small base64 URLs in Firestore
+- Minimal mobile UI with bottom toasts
 
-   ```bash
-   npm install
-   ```
+## Firestore collections
 
-2. Start the app
+- users
+- categories
+- lostItems
+- foundItems
+- claimRequests
+- claimLogs
+- reportLogs
+- itemMatches
+- notifications
+- conversations
+- messages
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Install
 
 ```bash
-npm run reset-project
+npm install
+npx expo install firebase expo-image-picker @react-native-async-storage/async-storage @expo/vector-icons react-native-gesture-handler react-native-safe-area-context react-native-screens
+npx expo start -c
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Firestore rules for testing
 
-## Learn more
+Paste this in Firebase Console > Firestore Database > Rules:
 
-To learn more about developing your project with Expo, look at the following resources:
+```js
+rules_version = '2';
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
+```
 
-## Join the community
+## Admin account
 
-Join our community of developers creating universal apps.
+Register normally, then in Firestore go to:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+`users > yourUserId > role`
+
+Change `user` to `admin`, save, then log out and log in again.
